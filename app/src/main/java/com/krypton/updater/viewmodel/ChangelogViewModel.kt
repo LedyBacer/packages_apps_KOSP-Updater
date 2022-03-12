@@ -17,10 +17,6 @@
 package com.krypton.updater.viewmodel
 
 import android.annotation.SuppressLint
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,8 +39,8 @@ import kotlinx.coroutines.launch
 class ChangelogViewModel @Inject constructor(
     mainRepository: MainRepository,
 ) : ViewModel() {
-    private val _changelog = MutableLiveData<SpannableStringBuilder?>(null)
-    val changelog: LiveData<SpannableStringBuilder?>
+    private val _changelog = MutableLiveData<List<Pair<String, String?>>>(emptyList())
+    val changelog: LiveData<List<Pair<String, String?>>>
         get() = _changelog
 
     init {
@@ -55,20 +51,13 @@ class ChangelogViewModel @Inject constructor(
         }
     }
 
-    private fun joinChangelog(changelogs: Map<Long, String?>?) =
-        SpannableStringBuilder().apply {
-            changelogs?.forEach { (date, changelog) ->
-                val startIndex = length
-                append(formatDate(date))
-                setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    startIndex,
-                    length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                append("\n\n$changelog\n")
-            }
+    private fun joinChangelog(changelogs: Map<Long, String?>?): List<Pair<String, String?>> {
+        val changelogList = mutableListOf<Pair<String, String?>>()
+        changelogs?.keys?.sorted()?.forEach {
+            changelogList.add(Pair(formatDate(it), changelogs[it]))
         }
+        return changelogList.toList()
+    }
 
     companion object {
         @SuppressLint("SimpleDateFormat")
