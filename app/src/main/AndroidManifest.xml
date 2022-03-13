@@ -55,6 +55,14 @@
                 android:resource="@drawable/ic_baseline_system_update_24" />
         </activity>
 
+        <activity android:name=".ui.TestActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ui.ChangelogActivity"
             android:exported="false"
